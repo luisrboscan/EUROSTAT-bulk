@@ -70,11 +70,3 @@ DK_NON_EU_EX <- DK_NON_EU_IX %>%
   filter(FLOW=="2"& PRODUCT_SECTION == "TO") %>%
   summarise(value=sum(value, na.rm = FALSE)) %>%
   arrange(desc(value))
-
-
-
-
-
-
-
-write.csv(DK_EU_IM, "DK_EU_IM.csv", row.names = FALSE )
