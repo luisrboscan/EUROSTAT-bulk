@@ -1,10 +1,10 @@
-setwd("C:/Users/lbo/Dropbox/Ea PC/Work (local folder)/RProjects/DV")
+setwd("C:/path")
 
 library(car)
 library(readr)
 library(dplyr)
 library(circlize)
-full202052 <- read_csv("C:/Users/lbo/Dropbox/Ea PC/Work (local folder)/RProjects/full202052.dat")
+full202052 <- read_csv("C:/path/full202052.dat")
 
 x <- as.data.frame(full202052)
 write.csv(x, "full202052.csv", row.names = FALSE )
