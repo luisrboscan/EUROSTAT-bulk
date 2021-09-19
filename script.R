@@ -1,12 +1,15 @@
 # R script to derive simple insights from full202052.dat
-# Written by Luis Bosc·n
+# Written by Luis Bosc√°n
 
+#Define working directory
 setwd("C:path/full202052.dat")
 
+#Loading libraries
 library(readr)
 library(dplyr)
 library(circlize)
 
+#Reading dataset and converting it into a df
 full202052 <- read_csv("C:path/full202052.dat")
 x <- as.data.frame(full202052)
 
@@ -16,12 +19,11 @@ DK <- x %>%
   filter(DECLARANT == "008")
 
 #  Part 1: DK's trade with the EU ---------------
-
 #This df contains all goods imports and exports between DK and the EU
 DK_EU <- DK %>%
   filter(TRADE_TYPE=="I")
   
-#This df contains the value of goods imports and exports to the EU ----
+#Part 1a: This df contains the value of goods imports and exports to the EU ----
 DK_EU_trade <- DK_EU %>%
   filter(PRODUCT_SECTION == "TO") %>%
   group_by(FLOW) %>%
@@ -30,8 +32,7 @@ DK_EU_trade <- DK_EU %>%
 # Insight 1: The value of DK's imports FROM the EU amounts to 59 billion EUR
 # Insight 2: The value of DK's exports TO the EU amounts to 49 billion EUR
 
-
-# Identifying Denmark's import partners in the EU -----------
+# Part 1b: Identifying Denmark's import partners in the EU -----------
 # I use the product section opening of up to 21 categories
 DK_EU_IX <- DK_EU %>%
   group_by(DECLARANT_ISO,PARTNER_ISO, FLOW, PRODUCT_SECTION) %>%
@@ -49,10 +50,9 @@ DK_EU_IM <- head(DK_EU_IM, 10)
 
 #Visualizing Denmark's EU imports with a Chord Diagram -------
 chordDiagram(DK_EU_IM)
-
 # Insight 3: Identifying and visualizing Denmark's top import partners in the EU
 
-# Denmark's top export partners in the EU ------------
+# Part 1c: Denmark's export partners in the EU ------------
 DK_EU_EX <- DK_EU_IX %>%
   filter(FLOW=="2"& PRODUCT_SECTION == "TO") %>%
   summarise(value=sum(value, na.rm = FALSE)/1000000000) %>%
@@ -64,44 +64,41 @@ DK_EU_EX <- head(DK_EU_EX, 10)
 
 #Visualization with a Chord Diagram --------
 chordDiagram(DK_EU_EX)
-
 # Insight 4: Identifying and visualizing Denmark's top import partners in the EU
 
-# DK's trade with non-EU countries -------------
+# Part 2: DK's trade with non-EU countries -------------
 
 DK_NON_EU <- DK %>%
   filter(TRADE_TYPE=="E")
 
-#This df contains the value of Denmark's goods imports and exports outsider the EU ----
-
+#Part 2a: this df contains the value of Denmark's goods imports and exports outsider the EU ----
 DK_NON_EU_trade <- DK_NON_EU %>%
   filter(PRODUCT_SECTION == "TO") %>%
   group_by(FLOW) %>%
   summarise(value=sum(VALUE_IN_EUROS, na.rm = FALSE)/1000000000)
-
 # Insight 5: The value of Denmark's good imports FROM outside the EU was 23.64 billion EUR
-# Insight 6: The value of Denmark's good exports TO non-EU countries was 41 billion EUR
+#Insight 6: The value of Denmark's good exports TO non-EU countries was 41 billion EUR
 
+#I use the product section opening of up to 21 categories
 DK_NON_EU_IX <- DK_NON_EU %>%
   group_by(DECLARANT_ISO,PARTNER_ISO, FLOW, PRODUCT_SECTION) %>%
   summarise(value=sum(VALUE_IN_EUROS, na.rm = FALSE))
 
-#Denmark's top import partners outside the EU ----------
+#Part 2b: Denmark's import partners outside the EU ----------
 DK_NON_EU_IM <- DK_NON_EU_IX %>%
   filter(FLOW=="1"& PRODUCT_SECTION == "TO") %>%
   summarise(value=sum(value, na.rm = FALSE)/1000000000) %>%
   arrange(desc(value)) %>%
   select(PARTNER_ISO, DECLARANT_ISO, value)
 
-# Insight 7: identifying and visualizing Denmark's import partners outside the EU
-
 #Denmark's top 10 import partners outside the EU --------
 DK_NON_EU_IM <- head(DK_NON_EU_IM, 10)
 
 #Visualizing Denmark's  with a Chord Diagram -------
 chordDiagram(DK_NON_EU_IM)
+#Insight 7: identifying and visualizing Denmark's import partners outside the EU
 
-#Denmark's top export partners outside the EU ----------
+#Part 2c: Denmark's export partners outside the EU ----------
 DK_NON_EU_EX <- DK_NON_EU_IX %>%
   filter(FLOW=="2"& PRODUCT_SECTION == "TO") %>%
   summarise(value=sum(value, na.rm = FALSE)/1000000000) %>%
@@ -113,5 +110,4 @@ DK_NON_EU_EX <- head(DK_NON_EU_EX, 10)
 
 #Visualizing Denmark's  with a Chord Diagram -------
 chordDiagram(DK_NON_EU_EX)
-
-# Insight 8: identifying and visualizing Denmark's import partners outside the EU
+# Insight 8: identifying and visualizing Denmark's export partners outside the EU
