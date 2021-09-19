@@ -1,6 +1,8 @@
 # R script to derive simple insights from full202052.dat
 # Written by Luis Boscán
 
+# Data documentation can be accessed here: https://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?sort=1&dir=comext%2FCOMEXT_METADATA
+
 #Define working directory
 setwd("C:path/full202052.dat")
 
