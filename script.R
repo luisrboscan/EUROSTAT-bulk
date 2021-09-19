@@ -1,14 +1,15 @@
+#Setting work directory
 setwd("C:/path")
 
+#call to libraries
 library(car)
 library(readr)
 library(dplyr)
 library(circlize)
+
+#reading in the data and converting it into a df
 full202052 <- read_csv("C:/path/full202052.dat")
-
 x <- as.data.frame(full202052)
-write.csv(x, "full202052.csv", row.names = FALSE )
-
 
 # Focus on Denmark's trade --------------
 DK<-x %>%
@@ -22,9 +23,7 @@ DK_EU_IX <- DK_EU %>%
   group_by(DECLARANT_ISO,PARTNER_ISO, FLOW, PRODUCT_SECTION) %>%
   summarise(value=sum(VALUE_IN_EUROS, na.rm = FALSE))
 
-#write.csv(DK_EU_IX, "DK_EU_IX.csv", row.names = FALSE )
-
-# Denmark's top import partners in the EU -----------
+# Denmark's import partners in the EU -----------
 DK_EU_IM <- DK_EU_IX %>%
   filter(FLOW=="1"& PRODUCT_SECTION == "TO") %>%
     summarise(value=sum(value, na.rm = FALSE)/1000000000) %>%
@@ -37,7 +36,7 @@ DK_EU_IM <- head(DK_EU_IM, 10)
 #Visualization with a Chord Diagram -------
 chordDiagram(DK_EU_IM)
 
-# Denmark's top export partners in the EU ------------
+# Denmark's export partners in the EU ------------
 DK_EU_EX <- DK_EU_IX %>%
   filter(FLOW=="2"& PRODUCT_SECTION == "TO") %>%
   summarise(value=sum(value, na.rm = FALSE)/1000000000) %>%
@@ -49,7 +48,6 @@ DK_EU_EX <- head(DK_EU_EX, 10)
 
 #Visualization with a Chord Diagram --------
 chordDiagram(DK_EU_EX)
-
 
 # DK's trade with non-EU countries -------------
 DK_NON_EU <- DK %>%
